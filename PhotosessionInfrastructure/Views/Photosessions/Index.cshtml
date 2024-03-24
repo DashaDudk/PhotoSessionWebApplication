@@ -1,0 +1,67 @@
+﻿@model IEnumerable<PhotosessionDomain.Model.Photosession>
+
+@{
+    ViewData["Title"] = "Photosession";
+}
+
+<h1>Type of photosessions @ViewBag.PhotosessionTypeName</h1>
+
+<p>
+    @Html.ActionLink("Add a new photosession", "Create", new { photosessionTypeId = ViewBag.PhotosessionTypeId })
+</p>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                Date and time
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                Location
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Type
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhotosessionLocation.CityName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhotosessionStatus.StatusName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhotosessionType.TypeName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

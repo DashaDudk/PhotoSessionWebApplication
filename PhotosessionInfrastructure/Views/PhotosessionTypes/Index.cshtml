@@ -1,0 +1,102 @@
+﻿@model IEnumerable<PhotosessionDomain.Model.PhotosessionType>
+
+@{
+    ViewData["Title"] = "Photosessions by type";
+}
+
+<h1>Photosession types</h1>
+
+<p>
+    <a asp-action="Create">Create a new type of photosession</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+
+
+
+
+<div class="container">
+    <div id="chart1" style="width: 60%; height: 400px; float: left;"></div>
+    <div id="chart2" style="width: 40%; height: 400px; float: right;"></div>
+    <div style="clear: both;"></div>
+</div>
+
+@section scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawCharts);
+
+        function drawCharts() {
+            drawChart1();
+            drawChart2();
+        }
+
+        function drawChart1() {
+            $.get('/api/Chart/JsonData1', function (JsonData) {
+                var data = google.visualization.arrayToDataTable(JsonData, false);
+                var options = {
+                    title: "Number of photosessions per month",
+                    width: '100%',
+                    height: 400,
+                    legend: { position: 'none' },
+                    vAxis: {
+                        title: 'Number of photosessions',
+                        gridlines: { count: 3 }                           
+                    },
+                    hAxis: {
+                        title: 'Month'
+                    },
+                    bars: 'vertical',
+                    colors: ['#20B2AA']
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart1'));
+                chart.draw(data, options);
+            });
+        }
+
+        function drawChart2() {
+            $.get('/api/Chart/JsonData2', function (JsonData) {
+                var data = google.visualization.arrayToDataTable(JsonData, false);
+                var options = {
+                    title: "Ratio of the number of photosessions and types",
+                    width: '100%',
+                    height: 400,
+                    colors: ['#00BFFF']
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('chart2'));
+                chart.draw(data, options);
+            });
+        }
+    </script>
+}
+
+
+
+

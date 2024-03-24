@@ -1,0 +1,61 @@
+﻿@model PhotosessionDomain.Model.Photosession
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Adding a photosession to a type @ViewBag.PhotosessionTypeName</h1>
+
+<h4>Photosession</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateTime" class="control-label"></label>
+                <input asp-for="DateTime" class="form-control" />
+                <span asp-validation-for="DateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhotosessionLocation" class="control-label"></label>
+                <select asp-for="PhotosessionLocationId" class ="form-control" asp-items="ViewBag.PhotosessionLocationId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhotosessionType" class="control-label"></label>
+                <select asp-for="PhotosessionTypeId" class="form-control" asp-items="ViewBag.PhotosessionTypeId"></select>
+     
+            </div>
+            <div class="form-group">
+                <label asp-for="PhotosessionStatus" class="control-label"></label>
+                <select asp-for="PhotosessionStatusId" class ="form-control" asp-items="ViewBag.PhotosessionStatusId"></select>
+            </div>
+
+            <input type="hidden" value="@ViewBag.PhotosessionTypeId" name= "PhotosessionTypeId" />
+            <input type="hidden" value="@ViewBag.PhotosessionStatusId" name="PhotosessionStatusId" />
+            <input type="hidden" value="@ViewBag.PhotosessionLocationId" name="PhotosessionLocationId" />
+
+            <div class="form-group mt-2">
+                <input type="submit" value="Create" class="btn btn-primary mt-2" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mt-2">
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
