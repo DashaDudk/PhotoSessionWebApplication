@@ -41,7 +41,7 @@ namespace PhotosessionInfrastructure.Controllers
             }
 
             //return View(photosessionStatus);
-            return RedirectToAction("Index", "Photosessions", new { id = photosessionStatus.Id, name = photosessionStatus.StatusName });
+            return RedirectToAction("Index", "Photosessions", new { id = photosessionStatus.Id, name = photosessionStatus.StatusName, aaa = 3 });
         }
 
         // GET: PhotosessionStatus/Create

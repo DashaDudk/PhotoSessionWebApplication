@@ -21,24 +21,36 @@ namespace PhotosessionInfrastructure.Controllers
         }
 
         // GET: Photosessions
-         public async Task<IActionResult> Index(int? id, string? name)
+         public async Task<IActionResult> Index(int? id, string? name, int? aaa)
          {
              if (id == null) return RedirectToAction("Index", "PhotosessionTypes");
+
+            List<Photosession> photosessionByPhotosessionType;
+
              //знаходження фотосесій за типом
-             ViewBag.PhotosessionTypeId = id;
-             ViewBag.PhotosessionTypeName = name;
-             var photosessionByPhotosessionType = _context.Photosessions.Where(p => p.PhotosessionTypeId == id).Include(p => p.PhotosessionType);
-             return View(await photosessionByPhotosessionType.ToListAsync());
-
-             ViewBag.PhotosessionStatusId = id;
-             ViewBag.PhotosessionStatusName = name;
-             var photosessionByPhotosessionStatus = _context.Photosessions.Where(b => b.PhotosessionStatusId == id).Include(b => b.PhotosessionStatus);
-             return View(await photosessionByPhotosessionStatus.ToListAsync());
-
-             ViewBag.PhotosessionLocationId = id;
-             ViewBag.PhotosessionCityName = name;
-             var photosessionByPhotosessionLocation = _context.Photosessions.Where(a => a.PhotosessionLocationId == id).Include(a => a.PhotosessionLocation);
-             return View(await photosessionByPhotosessionLocation.ToListAsync());
+             if (aaa == 1)
+             {
+                ViewBag.bbb = "Type";
+                ViewBag.PhotosessionTypeId = id;
+                ViewBag.PhotosessionTypeName = name;
+                photosessionByPhotosessionType = await _context.Photosessions.Where(p => p.PhotosessionTypeId == id).Include(p => p.PhotosessionType).Include(p => p.PhotosessionStatus).Include(p => p.PhotosessionLocation).ToListAsync();
+             }
+             else if (aaa == 2)
+             {
+                ViewBag.bbb = "Location";
+                ViewBag.PhotosessionLocationId = id;
+                ViewBag.PhotosessionTypeName = name;
+                photosessionByPhotosessionType = await _context.Photosessions.Where(p => p.PhotosessionLocationId == id).Include(p => p.PhotosessionType).Include(p => p.PhotosessionStatus).Include(p => p.PhotosessionLocation).ToListAsync();
+             }
+             else //if (aaa == 3 )
+             {
+                ViewBag.bbb = "Status";
+                ViewBag.PhotosessionStatusId = id;
+                ViewBag.PhotosessionTypeName = name;
+                photosessionByPhotosessionType = await _context.Photosessions.Where(p => p.PhotosessionStatusId == id).Include(p => p.PhotosessionType).Include(p => p.PhotosessionStatus).Include(p => p.PhotosessionLocation).ToListAsync();
+             }
+          
+             return View(photosessionByPhotosessionType);
          }
         
 
@@ -96,7 +108,7 @@ namespace PhotosessionInfrastructure.Controllers
             ModelState.Clear();
             TryValidateModel(photosession);
 
-            if (ModelState.IsValid)
+          //  if (ModelState.IsValid)
             {
                 _context.Add(photosession);
                 await _context.SaveChangesAsync();
@@ -140,11 +152,34 @@ namespace PhotosessionInfrastructure.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            PhotosessionType photosessionType = _context.PhotosessionTypes.Include(p => p.Photosessions).FirstOrDefault(p => p.Id == photosession.PhotosessionTypeId);
+            photosession.PhotosessionType = photosessionType;
+
+            PhotosessionStatus photosessionStatus = _context.PhotosessionStatuses.Include(b => b.Photosessions).FirstOrDefault(b => b.Id == photosession.PhotosessionStatusId);
+            photosession.PhotosessionStatus = photosessionStatus;
+
+            PhotosessionLocation photosessionLocation = _context.PhotosessionLocations.Include(a => a.Photosessions).FirstOrDefault(a => a.Id == photosession.PhotosessionLocationId);
+            photosession.PhotosessionLocation = photosessionLocation;
+
+            ModelState.Clear();
+            TryValidateModel(photosession);
+
+           // if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(photosession);
+                    var local = _context.Set<Photosession>()
+                    .Local
+                    .FirstOrDefault(entry => entry.Id.Equals(id));
+
+                    // check if local is not null 
+                    if (local != null)
+                    {
+                        // detach
+                        _context.Entry(local).State = EntityState.Detached;
+                    }
+                    // set Modified flag in your entry
+                    _context.Entry(photosession).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -158,7 +193,7 @@ namespace PhotosessionInfrastructure.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index", "Photosessions", new { id = photosessionTypeId });
+                return RedirectToAction("Index", "Photosessions", new { id = photosessionTypeId, aaa = 1 });
                 //return RedirectToAction("Index", "Photosessions", new { id = photosessionTypeId });
                 //return RedirectToAction(nameof(Index));
             }
@@ -201,8 +236,7 @@ namespace PhotosessionInfrastructure.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-
+            return RedirectToAction(nameof(PhotosessionsController.Index), "Photosessions");
         }
 
         private bool PhotosessionExists(int id)

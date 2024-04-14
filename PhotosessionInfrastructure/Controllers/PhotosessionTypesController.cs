@@ -42,7 +42,7 @@ namespace PhotosessionInfrastructure.Controllers
             }
 
             //return View(photosessionType);
-            return RedirectToAction("Index", "Photosessions", new { id = photosessionType.Id, name = photosessionType.TypeName });
+            return RedirectToAction("Index", "Photosessions", new { id = photosessionType.Id, name = photosessionType.TypeName, aaa = 1 });
         }
 
         // GET: PhotosessionTypes/Create

@@ -41,7 +41,7 @@ namespace PhotosessionInfrastructure.Controllers
             }
 
             //return View(photosessionLocation);
-            return RedirectToAction("Index", "Photosessions", new { id = photosessionLocation.Id, name = photosessionLocation.CityName });
+            return RedirectToAction("Index", "Photosessions", new { id = photosessionLocation.Id, name = photosessionLocation.CityName, aaa = 2 });
         }
 
         // GET: PhotosessionLocations/Create
