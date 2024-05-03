@@ -36,9 +36,6 @@
 
 
 
-
-
-
 <div class="container">
     <div id="chart1" style="width: 60%; height: 400px; float: left;"></div>
     <div id="chart2" style="width: 40%; height: 400px; float: right;"></div>
@@ -98,5 +95,15 @@
 }
 
 
+<a class="btn btn-primary mb-3" type="=submit" asp-area="" asp-controller="PhotosessionTypes" asp-action="Import">Import from Excel</a>
+
+@using (Html.BeginForm("Export", "PhotosessionTypes", FormMethod.Post))
+{
+    <button id="submitButton" class="btn btn-primary mb-3" type="submit">Export to Excel</button>
+}
 
 
+@using (Html.BeginForm("ExportToDocx", "PhotosessionTypes", FormMethod.Post))
+{
+    <button id="submitButton" class="btn btn-primary mb-3" type="submit">Export to docx</button>
+}
